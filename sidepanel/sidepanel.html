@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <script type="module" src="../scripts/analysis.js"></script> 
+        <script type="module" src="../scripts/button.js"></script> 
         <link rel="stylesheet" href="sidepanel.css"/> 
-        <script type="text/javascript" src="../scripts/analysis.js"></script> 
     </head>
-    
     <body>
         <title>Fact Checker Extension</title>
 
         <div class="input-container">
             <div class="url-input-container">
                 <input class="url-input" type="text" id="url-input-box"/>
-                <button onclick="analyse_url()">Analyse URL</button>
+                <button class="analysis-button" id="analyseurl">Analyse URL</button>
             </div>
-            <button class="analysis-button" onclick="analyse_current_page()">
+            <button class="analysis-button" id="analysepage">
                 Analyze this page
             </button>
         </div>
+
         <div class="output-box">
             <p>Waiting for results and stuff now
             <br><br>Analyse something and it might show up here idk</p>
         </div>
+
     </body>
 </html>
