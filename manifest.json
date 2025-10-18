@@ -3,6 +3,10 @@
     "description" : "Fact checker extension for WHACK '25", 
     "version" : "0.1", 
     "manifest_version" : 3,
+    "host_permissions": [
+    "https://factchecktools.googleapis.com/*",
+    "https://raw.githubusercontent.com/*"
+    ],
     "permissions" : ["sidePanel", "scripting", "activeTab", "tabs"],
     "side_panel" : {
         "default_path" : "sidepanel/sidepanel.html"
