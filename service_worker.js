@@ -59,24 +59,29 @@ function extractClaims(text) {
 
 // Use Google fact check api
 async function checkClaims(claims) {
-    const results = [];
-    for (const claim of claims) {
-        const url = `${FACTCHECK_API}?query=${encodeURIComponent(claim)}&key=${FACTCHECK_API_KEY}`;
-        try {
-            const res = await fetch(url);
-            const data = await res.json();
-            if (data.claims) {
-                results.push(...data.claims.map(c => ({
-                    claim: c.text,
-                    rating: c.claimReview?.[0]?.textualRating || "Not verified",
-                    publisher: c.claimReview?.[0]?.publisher?.name || "Unknown"
-                })));
-            }
-        } catch (err) {
-            console.warn("Fact check failed:", err);
-        }
+  const results = [];
+  for (const claim of claims) {
+    const url = `${FACTCHECK_API}?languageCode=en&query=${encodeURIComponent(claim)}&key=${FACTCHECK_API_KEY}`;
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (data?.claims?.length > 0) {
+        results.push(
+          ...data.claims.map((c) => ({
+            claim: c.text,
+            rating: c.claimReview?.[0]?.textualRating || "Not verified",
+            publisher: c.claimReview?.[0]?.publisher?.name || "Unknown",
+          }))
+        );
+      } else {
+        console.log("No fact checks found for:", claim);
+      }
+    } catch (err) {
+      console.warn("Fact check request failed:", err);
     }
-    return results;
+  }
+  return results;
 }
 
 
@@ -110,9 +115,20 @@ function getSourceCredibility(domain) {
 // Combine the three scores
 function computeTruthScore(factChecks, bias, trust) {
   const verified = factChecks.filter(f => f.rating.match(/true|correct|accurate/i)).length;
-  const factScore = Math.min(1, verified / 3);
-  return Math.round((factScore * 0.4 + (1 - bias) * 0.3 + trust * 0.3) * 100);
+  const disputed = factChecks.filter(f => f.rating.match(/false|inaccurate|misleading/i)).length;
+
+  let factScore;
+  if (factChecks.length === 0) {
+    // No data → neutral assumption
+    factScore = 0.6;
+  } else {
+    factScore = Math.max(0, Math.min(1, (verified - disputed) / Math.max(factChecks.length, 1) + 0.5));
+  }
+
+  const score = (factScore * 0.4 + (1 - bias) * 0.3 + trust * 0.3) * 100;
+  return Math.round(score);
 }
+
 
 
 // Create a summary
