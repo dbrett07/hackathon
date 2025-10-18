@@ -44,16 +44,7 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
         console.log(text);
         console.log(finalScore);
         console.log(interpretScore(finalScore));
-        // sendResponse({
-        //     result: {
-        //         domain,
-        //         biasScore,
-        //         sourceRating,
-        //         factCheckResults,
-        //         finalScore,
-        //         summary: interpretScore(finalScore)
-        //     }
-        //});
+        chrome.runtime.sendMessage({type : "RESULTS_RECIEVED"});
     }
     return true;
 });
