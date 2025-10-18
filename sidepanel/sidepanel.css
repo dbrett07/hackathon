@@ -64,6 +64,8 @@ p {
 
 .input-container { 
     display : flex;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .url-input-container { 
@@ -108,9 +110,10 @@ p {
   color: white;
   border-radius: 12px;
   padding: 20px 30px;
-  width: 500px;
+  width: 100%;
   box-shadow: 0 3px 8px rgba(0,0,0,0.3);
   justify-content: space-between;
+  box-sizing: border-box;
 }
 
 .info {
