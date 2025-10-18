@@ -3,11 +3,11 @@
 const FACTCHECK_API = "https://factchecktools.googleapis.com/v1alpha1/claims:search";
 const MBFC_DATA_URL = "https://raw.githubusercontent.com/BigMcLargeHuge/mbfc-dataset/main/mbfc.json";
 
-// Load the Media Bias/Fact Check dataset
+// Load datasets
 let mbfcData = null;
 fetch(MBFC_DATA_URL).then(res => res.json()).then(data => mbfcData = data);
 
-// Listen for messages from sidebar
+// listen for sidebar's messages
 chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
     if (msg.type === "ANALYSE_PAGE") {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -15,19 +15,15 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
 
         const domain = new URL(tab.url).hostname.replace("www.", "");
 
-        // Extract top claims to check
+        // Check top claims
         const claims = extractClaims(text);
-
-        // Check those claims via Google Fact Check
+        // Google fact check those claims
         const factCheckResults = await checkClaims(claims);
-
-        // Local bias and tone check (no API)
+        // bias and tone
         const biasScore = getLocalBiasScore(text);
-
-        // Rate source reliability
+        // source credibility
         const sourceRating = getSourceCredibility(domain);
-
-        // Combine results into a single truth score
+        // Overall score
         const finalScore = computeTruthScore(factCheckResults, biasScore, sourceRating);
 
         sendResponse({
@@ -45,14 +41,14 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
 });
 
 
-// 🧠 Extract simple factual-sounding sentences
+// Extracts sentences from text
 function extractClaims(text) {
     const matches = text.match(/[^.!?]*\b(is|are|was|were|claims?|says?|reports?|states?)\b[^.!?]*[.!?]/gi);
     return matches ? matches.slice(0, 5) : [];
 }
 
 
-// ✅ Query Google Fact Check API
+// Use Google fact check api
 async function checkClaims(claims) {
     const results = [];
     for (const claim of claims) {
@@ -75,22 +71,23 @@ async function checkClaims(claims) {
 }
 
 
-// ⚖️ Local bias and emotional language detection
+// bias and language detection as a backup
 function getLocalBiasScore(text) {
     const biasWords = [
-        "shocking", "disaster", "evil", "corrupt", "fake", "lies", "hoax", "agenda",
-        "traitor", "cover-up", "amazing", "outrageous", "disgrace", "terrible", "miracle"
+        "shocking", "disaster", "evil", "corrupt", "fake", "lies", "hoax", "agenda", "left-wing", "far-right", "right-wing", "war", "patriots",
+        "traitor", "cover-up", "amazing", "outrageous", "disgrace", "terrible", "miracle", "opinion", "woke", "socialist", "capitalist", 
+        "fake news", "clearly", "obviously", "without a doubt", "elites", "immigrants", "our nation", "hidden agenda", "critics", "unnamed sources"
     ];
     const emotionalWords = text.toLowerCase().split(/\W+/);
     const hits = emotionalWords.filter(w => biasWords.includes(w)).length;
     const biasRatio = hits / (emotionalWords.length || 1);
 
-    // Return bias score 0–1 (higher = more biased/emotional)
+    // bias score 0–1 (higher = more biased)
     return Math.min(biasRatio * 200, 1);
 }
 
 
-// 📰 Rate based on MediaBiasFactCheck dataset
+// Rate based on dataset
 function getSourceCredibility(domain) {
     if (!mbfcData) return 0.5;
     const entry = Object.values(mbfcData).find(site => domain.includes(site.domain || ""));
@@ -102,4 +99,18 @@ function getSourceCredibility(domain) {
 }
 
 
-// 🧮 Combine the three scores
+// Combine the three scores
+function computeTruthScore(factChecks, bias, trust) {
+  const verified = factChecks.filter(f => f.rating.match(/true|correct|accurate/i)).length;
+  const factScore = Math.min(1, verified / 3);
+  return Math.round((factScore * 0.4 + (1 - bias) * 0.3 + trust * 0.3) * 100);
+}
+
+
+// Create a summary
+function interpretScore(score) {
+  if (score > 85) return "Reliable";
+  if (score > 70) return "Some What Reliable";
+  if (score > 50) return "Mixed Accuracy — verify key claims";
+  return "Likely Misleading or Biased";
+}

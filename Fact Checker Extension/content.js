@@ -10,9 +10,9 @@ function extractVisibleText() {
     return text;
 }
 
-// Send the text to background when sidebar requests it
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (msg.type === "GET_PAGE_TEXT") {
+// Sidebar will request text and backgroudn will send it
+chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
+    if (req.type === "GET_PAGE_TEXT") {
         sendResponse({ text: extractVisibleText() });
     }
 });
