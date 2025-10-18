@@ -17,7 +17,7 @@ async function getTab() {
 
 const FACTCHECK_API_KEY = "AIzaSyAkDRBZx6ESrfrKaG0_qC_It93G1z_0Ed8";
 const FACTCHECK_API = "https://factchecktools.googleapis.com/v1alpha1/claims:search";
-const MBFC_DATA_URL = "https://raw.githubusercontent.com/BigMcLargeHuge/mbfc-dataset/main/mbfc.json";
+const MBFC_DATA_URL = "https://raw.githubusercontent.com/markokajzer/fact-check-sources/main/sources.json";
 
 // Load datasets
 let mbfcData = null;
@@ -88,8 +88,9 @@ async function checkClaims(claims) {
 // bias and language detection as a backup
 function getLocalBiasScore(text) {
     const biasWords = [
-        "shocking", "disaster", "evil", "corrupt", "fake", "lies", "hoax", "agenda",
-        "traitor", "cover-up", "amazing", "outrageous", "disgrace", "terrible", "miracle"
+        "shocking", "disaster", "evil", "corrupt", "fake", "lies", "hoax", "agenda", "left-wing", "far-right", "right-wing", "war", "patriots",
+        "traitor", "cover-up", "amazing", "outrageous", "disgrace", "terrible", "miracle", "opinion", "woke", "socialist", "capitalist", 
+        "fake news", "clearly", "obviously", "without a doubt", "elites", "immigrants", "our nation", "hidden agenda", "critics", "unnamed sources"
     ];
     const emotionalWords = text.toLowerCase().split(/\W+/);
     const hits = emotionalWords.filter(w => biasWords.includes(w)).length;
@@ -102,14 +103,25 @@ function getLocalBiasScore(text) {
 
 // Rate based on dataset
 function getSourceCredibility(domain) {
-    if (!mbfcData) return 0.5;
-    const entry = Object.values(mbfcData).find(site => domain.includes(site.domain || ""));
-    if (!entry) return 0.5;
-    if (entry.factual_reporting === "HIGH" || entry.factual_reporting === "VERY HIGH") return 1.0;
-    if (entry.factual_reporting === "MIXED") return 0.6;
-    if (entry.factual_reporting === "LOW" || entry.factual_reporting === "VERY LOW") return 0.3;
-    return 0.5;
+  if (!mbfcData) return 0.5;
+  const cleanDomain = domain.replace(/^www\./, "").toLowerCase();
+  const entry = Object.values(mbfcData).find(
+    site => cleanDomain.includes((site.domain || "").toLowerCase())
+  );
+  if (!entry) return 0.5;
+  if (entry.trust) return entry.trust; // already 0–1 range
+  // fallback mapping
+  switch ((entry.factual_reporting || "").toUpperCase()) {
+    case "VERY HIGH": return 1.0;
+    case "HIGH": return 0.9;
+    case "MOSTLY FACTUAL": return 0.8;
+    case "MIXED": return 0.6;
+    case "LOW": return 0.4;
+    case "VERY LOW": return 0.2;
+    default: return 0.5;
+  }
 }
+
 
 
 // Combine the three scores
@@ -138,3 +150,4 @@ function interpretScore(score) {
   if (score > 50) return "Mixed Accuracy — verify key claims";
   return "Likely Misleading or Biased";
 }
+console.log({ factChecks, factScore, bias, trust, finalScore });
