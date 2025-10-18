@@ -6,7 +6,10 @@ analyse_url_button.addEventListener("click", analyse_url);});
 
 chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => { 
     if (msg.type == "RESULTS_RECIEVED") {
-        var results_txt = document.getElementById("mypara")
-        results_txt.textContent = "AAAAAAAAAAAAAAAAAAA";
+        var score_txt = document.getElementById("score");
+        score_txt.textContent = msg.score;
+        var summary_txt = document.getElementById("summary");
+        summary_txt.textContent = msg.summary;
+
     }
 })
