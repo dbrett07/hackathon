@@ -80,7 +80,7 @@ p {
     margin: 5px;
 }
 
-.textboxstyle {
+.buttonboxstyle {
     border: 20px;
     border-radius: 5px;
     padding: .5em 1em;
@@ -88,4 +88,5 @@ p {
     background-color: #415469;
     border-color: black;
     margin: 5px;
+    
 }
