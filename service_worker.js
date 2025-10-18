@@ -15,7 +15,7 @@ async function getTab() {
   return tabs[0].url;
 }
 
-
+const FACTCHECK_API_KEY = "AIzaSyAkDRBZx6ESrfrKaG0_qC_It93G1z_0Ed8";
 const FACTCHECK_API = "https://factchecktools.googleapis.com/v1alpha1/claims:search";
 const MBFC_DATA_URL = "https://raw.githubusercontent.com/BigMcLargeHuge/mbfc-dataset/main/mbfc.json";
 
@@ -61,7 +61,7 @@ function extractClaims(text) {
 async function checkClaims(claims) {
     const results = [];
     for (const claim of claims) {
-        const url = `${FACTCHECK_API}?query=${encodeURIComponent(claim)}`;
+        const url = `${FACTCHECK_API}?query=${encodeURIComponent(claim)}&key=${FACTCHECK_API_KEY}`;
         try {
             const res = await fetch(url);
             const data = await res.json();
