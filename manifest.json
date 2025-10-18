@@ -3,8 +3,16 @@
     "description" : "Fact checker extension for WHACK '25", 
     "version" : "0.1", 
     "manifest_version" : 3,
+    "permissions" : [
+        "sidePanel"
+    ],
+    "side_panel" : {
+        "default_path" : "sidepanel/sidepanel.html"
+    },
+    "background" : {"service_worker" : "service_worker.js"},
     "action" : {
         "default_popup" : "popup/popup.html", 
         "default_icon" : "images/icon.png"
     }
+    
 }
