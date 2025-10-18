@@ -1,17 +1,61 @@
-body {
+:root { /*colours for css*/
+    --gradient1: linear-gradient(
+        45deg,
+        #2e4156,
+        #212f3e,
+        #1a2530,
+        #141c25,
+        #1b2129,
+        #11171f,
+        #0b0f14,
+        #020304
 
-background: #3b3636;
-font-family: sans-serif;
+        );
+    --white: linear-gradient( /* might neeed idk? */
+        45deg,
+        white,
+        whitesmoke,
+        lightgray,
+        gray
+        );
 
 
 }
+
+@keyframes bg-animation {
+    0% {background-position: left;}
+    50% {background-position: right;}
+    100% {background-position: left;}
+}
+@keyframes gradient {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+    
+}
+
+body {
+
+    background: #3b3636;
+    font-family: sans-serif;
+    background-image: var(--gradient1);
+    background-size: 400% 1000%;
+    animation: bg-animation 15s infinite;
+
+
+
+}
+
 
 p { 
     color: aliceblue;
     border: 2px solid black;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 20px;
     border-color: #5c5353;
+    font-family: Garamond;
+    font-size: 16px;
+    
 }
 
 .input-container { 
@@ -20,4 +64,25 @@ p {
 
 .url-input-container { 
     display : flex
+}
+
+.inputboxstyle {
+    border: 0px;
+    border-radius: 10px;
+    padding: .5em 1em;
+    font-size: 1rem;
+    background-color: white;
+    opacity: 50%;
+}
+
+.textboxstyle {
+    border: 20px;
+    border-radius: 5px;
+    padding: .5em 1em;
+    font-size: 1rem;
+    background-color: rgb(62, 59, 59);
+    border-color: black;
+    margin: 5px;
+    hover: {
+    }
 }
