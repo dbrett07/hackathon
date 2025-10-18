@@ -9,3 +9,11 @@ font-family: sans-serif;
 p { 
     color: aliceblue;
 }
+
+.input-container { 
+    display : flex;
+}
+
+.url-input-container { 
+    display : flex
+}

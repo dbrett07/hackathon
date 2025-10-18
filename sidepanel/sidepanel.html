@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="sidepanel.css"/>   
+        <link rel="stylesheet" href="sidepanel.css"/> 
+        <script type="text/javascript" src="../scripts/analysis.js"></script> 
     </head>
     
     <body>
@@ -9,11 +10,18 @@
             Fact Checker Extension
         </title>
 
-        <p>
-            "hello, sidepanel!"
-        
-        </p>
-        <script src="../scripts/button.js"></script>
-        <img src="../images/Monkey-Selfie.jpg" width = "1000" height = "400">
+        <div class="input-container">
+            <div class="url-input-container">
+                <input class="url-input" type="text" id="url-input-box"/>
+                <button onclick="analyse_url()">Analyse URL</button>
+            </div>
+            <button class="analysis-button" onclick="analyse_current_page()">
+                Analyze this page
+            </button>
+        </div>
+        <div class="output-box">
+            <p>Waiting for results and stuff now</p>
+            <p>Analyse something and it might show up here idk</p>
+        </div>
     </body>
 </html>
