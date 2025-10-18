@@ -56,16 +56,9 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
     const summary = interpretScore(finalScore);
 
     console.log("Final results:", { finalScore, summary, biasScore, sourceRating });
-
+    chrome.runtime.sendMessage({type : "RESULTS_RECIEVED", score: finalScore, summary: interpretScore(finalScore) });
     // Send back to sidebar
-    chrome.runtime.sendMessage({
-      type: "RESULTS_RECEIVED",
-      score: finalScore,
-      summary,
-      bias: biasScore,
-      trust: sourceRating,
-      claims: factCheckResults
-    });
+   
   }
   return true;
 });
