@@ -1,6 +1,7 @@
 // === TruthLens Popup Script ===
 // Uses Google Fact Check Tools API to verify claims.
-// Falls back to local bias-word detection if API results are missing.
+// Displays multiple fact-check results if available.
+// Falls back to local bias-word detection if API fails or finds nothing.
 
 document.addEventListener("DOMContentLoaded", async () => {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -18,10 +19,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 });
 
-// --- MAIN ANALYSIS FUNCTION ---
+// --- MAIN FACT-CHECK FUNCTION ---
 async function analyzeWithFactCheck(text, pageUrl) {
     const claim = extractClaim(text);
-    const apiKey = "AIzaSyDMxke9wwFfWX9Bqzi080osLLVB0o60484"; // <-- Replace this with your key
+    const apiKey = "AIzaSyAkDRBZx6ESrfrKaG0_qC_It93G1z_0Ed8"; // <-- Replace with your API key
     const endpoint = `https://factchecktools.googleapis.com/v1alpha1/claims:search?query=${encodeURIComponent(
         claim
     )}&key=${apiKey}`;
@@ -35,31 +36,33 @@ async function analyzeWithFactCheck(text, pageUrl) {
             return fallbackBiasAnalysis(text, pageUrl);
         }
 
-        // Take the first matching fact check
-        const check = data.claims[0];
-        const review = check.claimReview?.[0];
-        const textRating = review?.textualRating || "Unknown";
-        const publisher = review?.publisher?.name || "Unknown";
-        const reviewUrl = review?.url || "";
-        const claimTitle = check.text || claim;
+        // Limit to 3 results for clarity
+        const results = data.claims.slice(0, 3).map((claimItem) => {
+            const review = claimItem.claimReview?.[0];
+            return {
+                claim: claimItem.text || claim,
+                verdict: review?.textualRating || "Unknown",
+                publisher: review?.publisher?.name || "Unknown",
+                reviewUrl: review?.url || "",
+            };
+        });
 
-        // Basic scoring logic
+        // Aggregate score
         let trustMeter = 80;
         let color = "green";
-        if (/false|pants|misleading/i.test(textRating)) {
+
+        const verdicts = results.map((r) => r.verdict.toLowerCase()).join(" ");
+        if (/false|pants|misleading/i.test(verdicts)) {
             trustMeter = 40;
             color = "red";
-        } else if (/mixed|partly/i.test(textRating)) {
+        } else if (/mixed|partly/i.test(verdicts)) {
             trustMeter = 60;
             color = "orange";
         }
 
         return {
             mode: "fact-check",
-            claim: claimTitle,
-            verdict: textRating,
-            publisher,
-            reviewUrl,
+            results,
             trustMeter,
             color,
         };
@@ -116,48 +119,9 @@ function fallbackBiasAnalysis(text, url) {
 
     return {
         mode: "fallback",
-        claim: "No verified claims found.",
-        verdict: `Bias words: ${biasCount}`,
-        publisher: `Source trust: ${domainTrust}`,
-        reviewUrl: "",
-        trustMeter,
-        color,
-    };
-}
-
-// --- UI UPDATE ---
-function displayResults(result) {
-    const { mode, claim, verdict, publisher, reviewUrl, trustMeter, color } = result;
-
-    const status = document.getElementById("status");
-    const resultDiv = document.getElementById("result");
-    const bar = document.getElementById("bar");
-
-    if (mode === "fact-check") {
-        status.innerText = "Fact check complete ✅";
-        resultDiv.innerHTML = `
-        <b>Claim:</b> ${claim}<br/>
-        <b>Verdict:</b> ${verdict}<br/>
-        <b>Publisher:</b> ${publisher}<br/>
-        ${reviewUrl ? `<a href="${reviewUrl}" target="_blank">Read more</a>` : ""}
-        `;
-    } else {
-        status.innerText = "Fallback bias analysis used.";
-        resultDiv.innerHTML = `
-        <b>${claim}</b><br/>
-        <b>${verdict}</b><br/>
-        <b>${publisher}</b>
-        `;
-    }
-
-    bar.style.width = trustMeter + "%";
-    bar.style.background = color;
-}
-
-// --- HELPERS ---
-function extractClaim(text) {
-    // Grab the first clear sentence (short and declarative)
-    const sentences = text.split(/[.!?]/);
-    const claim = sentences.find((s) => s.length > 30) || text.slice(0, 200);
-    return claim.trim();
-}
+        results: [
+            {
+                claim: "No verified claims found.",
+                verdict: `Bias words detected: ${biasCount}`,
+                publisher: `Source trust: ${domainTrust}`,
+                reviewUrl
