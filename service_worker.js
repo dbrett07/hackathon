@@ -88,8 +88,9 @@ async function checkClaims(claims) {
 // bias and language detection as a backup
 function getLocalBiasScore(text) {
     const biasWords = [
-        "shocking", "disaster", "evil", "corrupt", "fake", "lies", "hoax", "agenda",
-        "traitor", "cover-up", "amazing", "outrageous", "disgrace", "terrible", "miracle"
+         "shocking", "disaster", "evil", "corrupt", "fake", "lies", "hoax", "agenda", "left-wing", "far-right", "right-wing", "war", "patriots",
+        "traitor", "cover-up", "amazing", "outrageous", "disgrace", "terrible", "miracle", "opinion", "woke", "socialist", "capitalist", 
+        "fake news", "clearly", "obviously", "without a doubt", "elites", "immigrants", "our nation", "hidden agenda", "critics", "unnamed sources"
     ];
     const emotionalWords = text.toLowerCase().split(/\W+/);
     const hits = emotionalWords.filter(w => biasWords.includes(w)).length;
