@@ -44,7 +44,7 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
         console.log(text);
         console.log(finalScore);
         console.log(interpretScore(finalScore));
-        chrome.runtime.sendMessage({type : "RESULTS_RECIEVED"});
+        chrome.runtime.sendMessage({type : "RESULTS_RECIEVED", score: finalScore, summary: interpretScore(finalScore) });;
     }
     return true;
 });
