@@ -8,7 +8,7 @@ const FACTCHECK_API = "https://factchecktools.googleapis.com/v1alpha1/claims:sea
 
 // === Local MBFC dataset (100 domains) ===
 // You must place "mbfc.json" in your extension’s background folder
-const MBFC_DATA_URL = chrome.runtime.getURL("background/mbfc.json");
+const MBFC_DATA_URL = chrome.runtime.getURL("mbfc.json");
 
 // === Load MBFC dataset ===
 let mbfcData = null;

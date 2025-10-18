@@ -19,6 +19,14 @@
     "content_scripts" : [{
         "matches" : ["<all_urls>"],
         "js" : ["analyse_page.js"]
-    }]
+    }],
+
+    "web_accessible_resources": [
+  {
+    "resources": ["mbfc.json"],
+    "matches": ["<all_urls>"]
+  }
+]
+
     
 }
