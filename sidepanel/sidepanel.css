@@ -43,16 +43,20 @@ body {
     animation: bg-animation 15s infinite;
 
 
-
 }
 
+h1 {
+    color: white;
+    font-family: Garamond;
+    text-align: center;
+}
 
 p { 
     color: aliceblue;
     border: 2px solid black;
     padding: 10px;
     border-radius: 20px;
-    border-color: #5c5353;
+    border-color: #415469;
     font-family: Garamond;
     font-size: 16px;
     
@@ -73,6 +77,7 @@ p {
     font-size: 1rem;
     background-color: white;
     opacity: 50%;
+    margin: 5px;
 }
 
 .textboxstyle {
@@ -80,9 +85,7 @@ p {
     border-radius: 5px;
     padding: .5em 1em;
     font-size: 1rem;
-    background-color: rgb(62, 59, 59);
+    background-color: #415469;
     border-color: black;
     margin: 5px;
-    hover: {
-    }
 }
