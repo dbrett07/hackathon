@@ -19,6 +19,13 @@
         gray
         );
 
+    --blue: linear-gradient(
+        45deg,
+        #000428,
+        #022e54,
+        #000428
+        );
+
 
 }
 
@@ -103,12 +110,12 @@ p {
 
 
 
-
 .analysis-card {
   display: flex;
   align-items: center;
-  background: #00117d;        /* deep navy blue */
+  background-image: var(--blue);    
   color: white;
+  animation: bg-animation 15s infinite ;
   border-radius: 12px;
   padding: 20px 30px;
   width: 100%;
