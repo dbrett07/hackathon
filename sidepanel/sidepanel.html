@@ -10,24 +10,17 @@
     <body>
         <title>Fact Checker Extension</title>
         <h1> <u>TruthLens Fact Checker </u></h1>
-        <div class="input-container">
-            <div class="url-input-container">
-                <input class="inputboxstyle" class="url-input" type="text" id="url-input-box"/>
-                <button class="buttonboxstyle"class="analysis-button" id="analyseurl">Analyse URL</button>
-            </div>
+        <div>
         </div>
         <div class="output-box">
-            <p id="mypara">Waiting for results and stuff now
-            <br><br>Analyse something and it might show up here idk</p>
         </div>
 
         <div margin-top: 10px;, margin-bottom: 10px;>
-            <p> SEARCH RESULTS WILL SHOW HERE:
-            <br><br> <!-- Link the Truthlens results into here-->
-            <p id= "score"> </p>
+             <!-- Link the Truthlens results into here-->
+            <p id= "score"> </p> <!-- tried to remove this, breaks the whole ui if I try?-->
         </div> 
         <div>    
-            <p> Statement checker:
+            <p> Analysis results:
         </p>
         </div>
 
@@ -44,8 +37,5 @@
         <div class="indicator" id="indicator"></div>
         </div>
 
-<input class="inputboxstyle" class="url-input" type="text" id="url-input-box"/>
-<button class="buttonboxstyle"class="analysis-button" id="analysestatement">Analyse Statement</button>
-        </div>
     </body>
 </html>

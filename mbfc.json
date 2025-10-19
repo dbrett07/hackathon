@@ -31,7 +31,7 @@
   {"domain": "dailymail.co.uk", "factual_reporting": "MIXED"},
   {"domain": "mirror.co.uk", "factual_reporting": "MIXED"},
   {"domain": "express.co.uk", "factual_reporting": "LOW"},
-  {"domain": "thesun.co.uk", "factual_reporting": "LOW"},
+  {"domain": "thesun.co.uk", "factual_reporting": "VERY LOW"},
   {"domain": "breitbart.com", "factual_reporting": "VERY LOW"},
   {"domain": "infowars.com", "factual_reporting": "VERY LOW"},
   {"domain": "newsmax.com", "factual_reporting": "LOW"},
