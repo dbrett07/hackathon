@@ -51,6 +51,7 @@ h1 {
     text-align: center;
 }
 
+
 p { 
     color: aliceblue;
     border: 2px solid black;
@@ -155,7 +156,8 @@ p {
 .indicator {
   width: 70px;
   height: 70px;
-  background: #63ff63;       /* bright green */
+  background: #ff6363;       /* bright green */
   border-radius: 50%;
   flex-shrink: 0;
+  transition: background-color 1s ease;
 }   

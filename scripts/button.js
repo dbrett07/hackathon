@@ -1,4 +1,5 @@
 import {analyse_url} from "./analyse_url.js"
+import {updateIndicator} from "./circlefading.js"
 
 document.addEventListener("DOMContentLoaded", () => {
 var analyse_url_button = document.getElementById("analyseurl");
@@ -12,6 +13,9 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
         score_txt.textContent = msg.score;
         var summary_txt = document.getElementById("summary");
         summary_txt.textContent = msg.summary;
+        var site_name_txt = document.getElementById("site-name");
+        site_name_txt.textContent = msg.domain_name;
+        updateIndicator(msg.score);
 
 
     }

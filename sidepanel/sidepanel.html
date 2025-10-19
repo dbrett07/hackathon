@@ -4,6 +4,7 @@
         <script type="module" src="../scripts/analyse_url.js"></script> 
         <script type="module" src="../scripts/button.js"></script> 
         <script scr="./message_open.js"></script>
+        <script scr="module" src="../scripts/circlefading.js"></script>
         <link rel="stylesheet" href="sidepanel.css"/> 
     </head>
     <body>
@@ -24,7 +25,6 @@
             <p> SEARCH RESULTS WILL SHOW HERE:
             <br><br> <!-- Link the Truthlens results into here-->
             <p id= "score"> </p>
-            <p id="summary"> </p>
         </div> 
         <div>    
             <p> Statement checker:
@@ -33,17 +33,15 @@
 
         <div class="analysis-card">
         <div class="info">
-            <div class="title">Analysis results - <span class="site-name">[SITE NAME]</span></div>
+            <div class="title">Analysis results - <span id="site-name">[SITE NAME]</span></div>
             <div class="score-block">
-            <div id="analysisscore"></div>
+            <div class="score" id="analysisscore"></div>
             <ul class="points">
-                <li>good point</li>
-                <li>good point</li>
-                <li class="bad">bad point</li>
+                <li id="summary">...</li>
             </ul>
             </div>
         </div>
-        <div class="indicator"></div>
+        <div class="indicator" id="indicator"></div>
         </div>
 
 <input class="inputboxstyle" class="url-input" type="text" id="url-input-box"/>

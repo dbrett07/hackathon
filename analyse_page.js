@@ -10,5 +10,6 @@ function extractVisibleText() {
     return text;
 }
 
+
 // Sidebar will request text and backgroudn will send it
-chrome.runtime.sendMessage({type : "ANALYSE_PAGE", text: extractVisibleText() });
+chrome.runtime.sendMessage({type : "ANALYSE_PAGE", text: extractVisibleText()});
