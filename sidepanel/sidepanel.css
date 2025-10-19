@@ -42,7 +42,6 @@
 }
 
 body {
-
     background: #3b3636;
     font-family: sans-serif;
     background-image: var(--gradient1);
@@ -54,7 +53,7 @@ body {
 
 h1 {
     color: white;
-    font-family: Garamond;
+    font-family: freemono, monospace;
     text-align: center;
 }
 
@@ -168,3 +167,7 @@ p {
   flex-shrink: 0;
   transition: background-color 1s ease;
 }   
+
+.invisible {
+    visibility: hidden;
+}
