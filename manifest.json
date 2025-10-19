@@ -13,7 +13,7 @@
     },
     "background" : {"service_worker" : "service_worker.js"},
     "action" : { 
-        "default_icon" : "images/icon.png"
+        "default_icon" : "images/factchecker.png"
     }, 
 
     "content_scripts" : [{
@@ -26,7 +26,14 @@
     "resources": ["mbfc.json"],
     "matches": ["<all_urls>"]
   }
-]
+],
+
+ "icons": {
+   "16": "images/factchecker16.png",
+   "32": "images/factchecker32.png",
+   "48": "images/factchecker48.png",
+   "128": "images/factchecker128.png"
+ }
 
     
 }
