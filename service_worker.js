@@ -1,16 +1,13 @@
-// -----------------------------
-// TruthLens Background Script
-// -----------------------------
+//404: TeamName Not Found
 
-// === Google Fact Check API key and endpoint ===
+//Google Fact Check API key
 const FACTCHECK_API_KEY = "AIzaSyAkDRBZx6ESrfrKaG0_qC_It93G1z_0Ed8";
 const FACTCHECK_API = "https://factchecktools.googleapis.com/v1alpha1/claims:search";
 
-// === Local MBFC dataset (100 domains) ===
-// You must place "mbfc.json" in your extension’s background folder
+// local mbfc data
 const MBFC_DATA_URL = chrome.runtime.getURL("mbfc.json");
 
-// === Load MBFC dataset ===
+// Load MBFC data
 let mbfcData = null;
 fetch(MBFC_DATA_URL)
   .then(res => res.json())
@@ -21,13 +18,13 @@ fetch(MBFC_DATA_URL)
   .catch(err => console.error("Failed to load MBFC dataset:", err));
 
 
-// === Side panel activation ===
+// Side panel activation
 chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error(error));
 
 
-// === Message handler from sidebar/content ===
+// Message handler from sidebar/content
 chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
   if (msg.type === "ANALYSE_PAGE") {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -36,18 +33,18 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
 
     console.log(`Analysing: ${domain}`);
 
-    // Extract factual-looking sentences
+    // Extract sentences
     const claims = extractClaims(text);
     console.log("Extracted claims:", claims);
 
-    // Attempt Google Fact Check API
+    // Google Fact Check API
     let factCheckResults = await checkClaims(claims);
     if (factCheckResults.length === 0) {
       console.warn("No Google results — using fallback fact-checking");
       factCheckResults = await fallbackFactCheck(claims);
     }
 
-    // Analyse bias and source credibility
+    // bias and credibility
     const biasScore = getLocalBiasScore(text);
     const sourceRating = getSourceCredibility(domain);
 
@@ -56,22 +53,21 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
     const summary = interpretScore(finalScore);
 
     console.log("Final results:", { finalScore, summary, biasScore, sourceRating });
-    chrome.runtime.sendMessage({type : "RESULTS_RECIEVED", score: finalScore, summary: interpretScore(finalScore), domain_name: domain});
-    // Send back to sidebar
-   
+    // send back to sidebar
+    chrome.runtime.sendMessage({type : "RESULTS_RECIEVED", score: finalScore, summary: interpretScore(finalScore), domain_name: domain});   
   }
   return true;
 });
 
 
-// === Extract potential factual claims ===
+// Extract potential claims
 function extractClaims(text) {
   const matches = text.match(/[^.!?]*\b(is|are|was|were|claims?|says?|reports?|states?)\b[^.!?]*[.!?]/gi);
   return matches ? matches.slice(0, 5) : [];
 }
 
 
-// === Primary: Google Fact Check API ===
+// Google fact check API
 async function checkClaims(claims) {
   const results = [];
   for (const claim of claims) {
@@ -94,7 +90,7 @@ async function checkClaims(claims) {
 }
 
 
-// === Fallback fact-check (free) using DuckDuckGo summaries ===
+// Fallback fact-check using DuckDuckGo summaries
 async function fallbackFactCheck(claims) {
   const results = [];
   for (const claim of claims) {
@@ -117,12 +113,12 @@ async function fallbackFactCheck(claims) {
 }
 
 
-// === Bias word analysis ===
+// Bias word analysis
 function getLocalBiasScore(text) {
   const biasWords = [
     "shocking", "disaster", "evil", "corrupt", "fake", "lies", "hoax", "agenda", "left-wing", "far-right", "right-wing", "war", "patriots",
-      "traitor", "cover-up", "amazing", "outrageous", "disgrace", "terrible", "miracle", "opinion", "woke", "socialist", "capitalist", 
-      "fake news", "clearly", "obviously", "without a doubt", "elites", "immigrants", "our nation", "hidden agenda", "critics", "unnamed sources"
+    "traitor", "cover-up", "amazing", "outrageous", "disgrace", "terrible", "miracle", "opinion", "woke", "socialist", "capitalist", 
+    "fake news", "clearly", "obviously", "without a doubt", "elites", "immigrants", "our nation", "hidden agenda", "critics", "unnamed sources"
   ];
   const emotionalWords = text.toLowerCase().split(/\W+/);
   const hits = emotionalWords.filter(w => biasWords.includes(w)).length;
@@ -131,7 +127,7 @@ function getLocalBiasScore(text) {
 }
 
 
-// === Domain credibility lookup (MBFC dataset) ===
+// mbfc check
 function getSourceCredibility(domain) {
   if (!mbfcData) return 0.5;
   const cleanDomain = domain.toLowerCase().replace(/^www\./, "");
@@ -150,7 +146,7 @@ function getSourceCredibility(domain) {
 }
 
 
-// === Combine bias, trust, and fact check ===
+// Combine scores
 function computeTruthScore(factChecks, bias, trust) {
   const verified = factChecks.filter(f => f.rating.match(/true|accurate|verified/i)).length;
   const disputed = factChecks.filter(f => f.rating.match(/false|inaccurate|misleading/i)).length;
@@ -168,7 +164,7 @@ function computeTruthScore(factChecks, bias, trust) {
 }
 
 
-// === Human-readable result ===
+// results for analysis display
 function interpretScore(score) {
   if (score > 85) return "Reliable";
   if (score > 70) return "Mostly Reliable";
